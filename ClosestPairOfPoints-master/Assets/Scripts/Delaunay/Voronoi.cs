@@ -236,7 +236,7 @@ namespace csDelaunay {
 					topSite = RightRegion(rbnd, bottomMostSite);
 					// These three sites define a Delaunay triangle
 					// (not actually using these for anything...)
-					// triangles.Add(new Triangle(bottomSite, topSite, RightRegion(lbnd, bottomMostSite)));
+					triangles.Add(new Triangle(bottomSite, topSite, RightRegion(lbnd, bottomMostSite)));
 
 					v = lbnd.vertex;
 					v.SetIndex();

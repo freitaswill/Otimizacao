@@ -13,6 +13,7 @@ public class VoronoiDiagram : MonoBehaviour
     private Dictionary<Vector2f, Site> sites;
     private List<Edge> edges;
     private Vector2f V;
+    private Voronoi voronoi;
 
     public void triggerVoronoi(List<Vector2f> points)
     {
@@ -36,7 +37,7 @@ public class VoronoiDiagram : MonoBehaviour
 
         // There is a two ways you can create the voronoi diagram: with or without the lloyd relaxation
         // Here I used it with 2 iterations of the lloyd relaxation
-        Voronoi voronoi = new Voronoi(points, bounds);
+        voronoi = new Voronoi(points, bounds);
 
         // But you could also create it without lloyd relaxtion and call that function later if you want
         //Voronoi voronoi = new Voronoi(points,bounds);
@@ -78,6 +79,21 @@ public class VoronoiDiagram : MonoBehaviour
 
             DrawLine(edge.ClippedEnds[LR.LEFT], edge.ClippedEnds[LR.RIGHT], tx, Color.black);
         }
+
+        List<Vector2f> neighbors = new List<Vector2f>();
+        //List<Site> sitesNeighbors = new List<Site>();
+        foreach (KeyValuePair<Vector2f, Site> kv in sites)
+        {
+            Vector2f v2 = new Vector2f(kv.Key.x, kv.Key.y);
+            neighbors = voronoi.NeighborSitesForSite(v2);
+            
+            for(int i = 0; i < neighbors.Count; i++)
+                DrawLine(v2, neighbors[i], tx, Color.red);
+        }
+            //DrawLine(edge.ClippedEnds[LR.LEFT], edge.ClippedEnds[LR.RIGHT], tx, Color.black);
+        
+        tx.Apply();
+
         tx.Apply();
 
         this.GetComponent<Renderer>().material.mainTexture = tx;
