@@ -13,6 +13,7 @@ public class PointManager : MonoBehaviour
     private LineRenderer line5;
     private ClosestPairOfPoints closestPairOfPoints;
     private VoronoiDiagram VD;
+    private PathFinding P;
     private GrahamScan grahamScan;
     public GameObject[] gameObject;
     public Vector2[] myPoints;
@@ -28,6 +29,7 @@ public class PointManager : MonoBehaviour
         line = GetComponent<LineRenderer>();
         closestPairOfPoints = new ClosestPairOfPoints();
         grahamScan = new GrahamScan();
+        P = new PathFinding();
         gameObject = new GameObject[16];
         VD = Voronoi.GetComponent<VoronoiDiagram>();
         myPoints = new Vector2[16];
@@ -120,7 +122,12 @@ public class PointManager : MonoBehaviour
         {
             VD.triggerVoronoi(pointsf);
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            VD.SetPath(P.TriggerPathFinding(pointsf[0], pointsf[10], VD));
+            VD.DrawPath();
         }
+    }
 
     private void DefaultPoints()
     {

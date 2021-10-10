@@ -6,6 +6,9 @@ namespace csDelaunay {
 
 	public class Site : ICoord {
 
+
+		public int cost = 2;
+		public int costSum = 1000;
 		private static Queue<Site> pool = new Queue<Site>();
 
 		public static Site Create(Vector2f p, int index, float weigth) {

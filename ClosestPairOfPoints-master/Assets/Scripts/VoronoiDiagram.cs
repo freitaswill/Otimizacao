@@ -10,10 +10,11 @@ public class VoronoiDiagram : MonoBehaviour
     public int polygonNumber = 200;
 
     // This is where we will store the resulting data
-    private Dictionary<Vector2f, Site> sites;
+    public Dictionary<Vector2f, Site> sites;
     private List<Edge> edges;
     private Vector2f V;
-    private Voronoi voronoi;
+    public Voronoi voronoi;
+    List<Site> Path;
 
     public void triggerVoronoi(List<Vector2f> points)
     {
@@ -130,5 +131,34 @@ public class VoronoiDiagram : MonoBehaviour
                 y0 += sy;
             }
         }
+    }
+    public VoronoiDiagram getVoronoi()
+    {
+        return this;
+    }
+    public Dictionary<Vector2f, Site> getIndexedSites()
+    {
+        return voronoi.SitesIndexedByLocation;
+    }
+    public void SetPath(List<Site> P)
+    {
+        Path = P;
+    }
+    public void DrawPath()
+    {
+        Texture2D tx = new Texture2D(512, 512);
+        
+        //List<Site> sitesNeighbors = new List<Site>();
+        
+            for (int i = 0; i < Path.Count-1; i++)
+                DrawLine(Path[i].Coord, Path[i+1].Coord, tx, Color.red);
+        
+        //DrawLine(edge.ClippedEnds[LR.LEFT], edge.ClippedEnds[LR.RIGHT], tx, Color.black);
+
+        tx.Apply();
+
+        tx.Apply();
+
+        this.GetComponent<Renderer>().material.mainTexture = tx;
     }
 }
