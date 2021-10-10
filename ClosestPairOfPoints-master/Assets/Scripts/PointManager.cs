@@ -12,11 +12,15 @@ public class PointManager : MonoBehaviour
     private LineRenderer line4;
     private LineRenderer line5;
     private ClosestPairOfPoints closestPairOfPoints;
+    private VoronoiDiagram VD;
     private GrahamScan grahamScan;
     public GameObject[] gameObject;
     public Vector2[] myPoints;
+    public Vector2f[] myPointsf;
     List<GameObject> points;
     List<Vector2> points2;
+    List<Vector2f> pointsf;
+    public GameObject Voronoi;
 
     private void Start()
     {
@@ -25,7 +29,9 @@ public class PointManager : MonoBehaviour
         closestPairOfPoints = new ClosestPairOfPoints();
         grahamScan = new GrahamScan();
         gameObject = new GameObject[16];
+        VD = Voronoi.GetComponent<VoronoiDiagram>();
         myPoints = new Vector2[16];
+        myPointsf = new Vector2f[16];
         gameObject[1] = (GameObject)Instantiate(point, new Vector2(-13, -0.5f), Quaternion.identity, transform)   ;
         gameObject[2] = (GameObject)Instantiate(point, new Vector2(-10.5f, 11.5f), Quaternion.identity, transform);
         gameObject[3] = (GameObject)Instantiate(point, new Vector2(-10, -9), Quaternion.identity, transform)      ;
@@ -45,14 +51,16 @@ public class PointManager : MonoBehaviour
        
         points = new List<GameObject>();
         points2 = new List<Vector2>();
+        pointsf = new List<Vector2f>();
 
         for (int i = 0; i < 16; i++)
         {
             myPoints[i] = new Vector2(gameObject[i].transform.position.x, gameObject[i].transform.position.y);
-            
-            
+            myPointsf[i] = new Vector2f((-gameObject[i].transform.position.x+13)*20.5, (-gameObject[i].transform.position.y+13)*20.5);
+
             points.Add(gameObject[i]);
             points2.Add(myPoints[i]);
+            pointsf.Add(myPointsf[i]);
         }
     }
 
@@ -63,8 +71,8 @@ public class PointManager : MonoBehaviour
             DefaultPoints();
             Distance smallestDistance = closestPairOfPoints.FindClosestPair(points);
 
-           //smallestDistance.firstPoint.GetComponent<SpriteRenderer>().color = Color.red;
-           //smallestDistance.secondPoint.GetComponent<SpriteRenderer>().color = Color.red;
+            //smallestDistance.firstPoint.GetComponent<SpriteRenderer>().color = Color.red;
+            //smallestDistance.secondPoint.GetComponent<SpriteRenderer>().color = Color.red;
 
             line.SetPositions(new Vector3[]
             {
@@ -108,7 +116,11 @@ public class PointManager : MonoBehaviour
             });
 
         }
-    }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            VD.triggerVoronoi(pointsf);
+        }
+        }
 
     private void DefaultPoints()
     {
