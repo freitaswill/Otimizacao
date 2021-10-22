@@ -8,6 +8,7 @@ public struct Node
 {
     public Vector2f Coord;
     public float cost;
+    
     public bool startBool, finishBool;
     public Node(Vector2f c, bool s, bool f, float cos, float d, List<Vector2f> N)
     {
@@ -33,6 +34,7 @@ public class PathFinding : MonoBehaviour
     private int startIndex, finishIndex;
     Site site;
     bool first;
+    float distance;
 
     List<Site> path = new List<Site>();
 
@@ -113,7 +115,11 @@ public class PathFinding : MonoBehaviour
             {
                 if (site.costSum + neighbor.cost < neighbor.costSum)
                 {
-                    neighbor.costSum = site.costSum + site.cost;
+                    distance = (neighbor.Coord.x - site.Coord.x) + (neighbor.Coord.y - site.Coord.y);
+                    if (distance < 0)
+                        distance = -distance;
+
+                    neighbor.costSum = site.costSum + distance;
                     FindPath(neighbor.Coord);
                     //Debug.Log("Caminho mais curto");
                 }
@@ -142,23 +148,36 @@ public class PathFinding : MonoBehaviour
             Debug.Log(site.Coord);
             
             List<Site> neighbors = site.NeighborSites();
+            Site Shortest = site;
+            Site Shortest2 = site;
             //Debug.Log(site.Coord);
             foreach (Site neighbor in neighbors)
             {
                 Debug.Log(site.costSum);
                 Debug.Log(neighbor.costSum);
-                if (site.costSum > neighbor.costSum)
+                if (Shortest.costSum > neighbor.costSum)
                 {
-                    path.Add(neighbor);
-                    ShortestPath(neighbor.Coord);
-                    Debug.Log("Caminho mais curto");
+                    Shortest = neighbor;
                 }
+
                 if (neighbor.Coord == nodes[startIndex].Coord)
                 {
 
+                    path.Add(Shortest);
                     Debug.Log("Cheguei no final");
+                    return;
                 }
             }
+
+            //if (Shortest == Shortest2)
+            //    return;
+
+            Shortest2 = Shortest;
+                path.Add(Shortest);
+                ShortestPath(Shortest.Coord);
+                Debug.Log("Caminho mais curto");
+            
+
 
         }
 

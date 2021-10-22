@@ -347,6 +347,8 @@ MonoBehaviour:
   gameObject: []
   myPoints: []
   Voronoi: {fileID: 1479141866}
+  vectorIndex1: 5
+  vectorIndex2: 8
 --- !u!120 &2029184305
 LineRenderer:
   m_ObjectHideFlags: 0

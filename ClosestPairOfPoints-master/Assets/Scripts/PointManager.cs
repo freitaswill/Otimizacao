@@ -22,6 +22,8 @@ public class PointManager : MonoBehaviour
     List<Vector2> points2;
     List<Vector2f> pointsf;
     public GameObject Voronoi;
+    LineRenderer[] line2;
+    public int vectorIndex1 = 1, vectorIndex2 = 4;
 
     private void Start()
     {
@@ -34,6 +36,7 @@ public class PointManager : MonoBehaviour
         VD = Voronoi.GetComponent<VoronoiDiagram>();
         myPoints = new Vector2[16];
         myPointsf = new Vector2f[16];
+        line2 = new LineRenderer[16];
         gameObject[1] = (GameObject)Instantiate(point, new Vector2(-13, -0.5f), Quaternion.identity, transform)   ;
         gameObject[2] = (GameObject)Instantiate(point, new Vector2(-10.5f, 11.5f), Quaternion.identity, transform);
         gameObject[3] = (GameObject)Instantiate(point, new Vector2(-10, -9), Quaternion.identity, transform)      ;
@@ -63,6 +66,11 @@ public class PointManager : MonoBehaviour
             points.Add(gameObject[i]);
             points2.Add(myPoints[i]);
             pointsf.Add(myPointsf[i]);
+        }
+
+        for (int i = 0; i < points2.Count(); i++)
+        {
+            line2[i] = points[i].AddComponent<LineRenderer>();
         }
     }
 
@@ -102,20 +110,39 @@ public class PointManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
+            for (int i = 0; i < 16; i++)
+            {
+                line2[i].SetPositions(new Vector3[]
+                {
+                new Vector3(100, 100, 0),
+                 new Vector3(100, 100, 0)
+                });
+            }
             points.Sort((p1, p2) => p1.transform.position.y.CompareTo(p2.transform.position.y));
             points2.Sort((p1, p2) => p1.y.CompareTo(p2.y));
             points2 = grahamScan.triggerGrahamScan(points2, points);
-            line.SetPositions(new Vector3[]
+            //line.SetPositions(new Vector3[]
+            //{
+            //    new Vector3(points2[0].x, points2[0].y, 0),
+            //     new Vector3(points2[1].x, points2[1].y, 0)
+            //});
+            for(int i = 0; i < points2.Count()-1; i++)
             {
-                new Vector3(points2[0].x, points2[0].y, 0),
-                 new Vector3(points2[1].x, points2[1].y, 0)
-            });
-            LineRenderer line2 = points[0].AddComponent<LineRenderer>();
-            line2.SetPositions(new Vector3[]
-            {
-                new Vector3(points2[2].x, points2[2].y, 0),
-                 new Vector3(points2[1].x, points2[1].y, 0)
-            });
+                line2[i].SetPositions(new Vector3[]
+                {
+                new Vector3(points2[i].x, points2[i].y, 0),
+                 new Vector3(points2[i+1].x, points2[i+1].y, 0)
+                });
+                if(i == points2.Count - 2)
+                {
+                    line2[i+1].SetPositions(new Vector3[]
+                {
+                new Vector3(points2[i+1].x, points2[i+1].y, 0),
+                 new Vector3(points2[0].x, points2[0].y, 0)
+                });
+                }
+            }
+            
 
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
@@ -124,7 +151,7 @@ public class PointManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            VD.SetPath(P.TriggerPathFinding(pointsf[0], pointsf[10], VD));
+            VD.SetPath(P.TriggerPathFinding(pointsf[vectorIndex1], pointsf[vectorIndex2], VD));
             VD.DrawPath();
         }
     }
@@ -160,6 +187,19 @@ public class PointManager : MonoBehaviour
 
 
             //Instantiate(point, randomPosition, Quaternion.identity, transform).name = "Point";
+        }
+        points.Clear();
+        points2.Clear();
+        pointsf.Clear();
+        for (int i = 0; i < 16; i++)
+        {
+            
+            myPoints[i] = new Vector2(gameObject[i].transform.position.x, gameObject[i].transform.position.y);
+            myPointsf[i] = new Vector2f((-gameObject[i].transform.position.x + 13) * 20.5, (-gameObject[i].transform.position.y + 13) * 20.5);
+
+            points.Add(gameObject[i]);
+            points2.Add(myPoints[i]);
+            pointsf.Add(myPointsf[i]);
         }
     }
 
